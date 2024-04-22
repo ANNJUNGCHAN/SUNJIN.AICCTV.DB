@@ -101,6 +101,7 @@ def extract_todb(LOG_PATH, path) :
 
     ## 동 이름 추출
     House = house_name.replace(Farm + "_","")
+    House = House.replace("_"+ COUNTER,"")
 
     ## incout, outcount 추출
     in_count, out_count = find_count(os.path.join(LOG_PATH, path))
