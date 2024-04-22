@@ -2,6 +2,9 @@ import re
 import pandas as pd
 import os
 import json
+from ast import literal_eval
+
+
 
 def Load_Private_Info(SETTING_PATH) :
     
@@ -107,3 +110,40 @@ def extract_todb(LOG_PATH, path) :
     in_count, out_count = find_count(os.path.join(LOG_PATH, path))
     
     return Farm, House, COUNTER, start_time, end_time, in_count, out_count
+
+def parse_frames(text):
+    # 각 프레임 별로 분리
+    frames = re.split(r'(?=Frame \d+:)', text.strip())
+    frame_ids = []
+    bboxes = []
+    tracks = []
+    
+    for frame in frames:
+        if frame.strip():  # 비어있지 않은 프레임만 처리
+            # Frame ID 추출
+            frame_id = re.search(r'Frame (\d+):', frame)
+            if frame_id:
+                frame_ids.append(int(frame_id.group(1)))
+            
+            # BBOX 추출
+            bbox = re.search(r'BBOX : tensor\((\[\[.*?\]\])', frame, re.DOTALL)
+            if bbox:
+                bbox_value = literal_eval(bbox.group(1).replace('[', '[').replace(']', ']'))
+                bboxes.append(bbox_value)
+            
+            # TRACK 추출
+            track = re.search(r'TRACK : (\[.*?\])', frame)
+            if track:
+                track_ids = literal_eval(track.group(1))
+                tracks.append(track_ids)
+    
+    return frame_ids, bboxes, tracks
+
+def read_and_parse_file(file_path):
+    # 파일 읽기
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+    
+    # 데이터 파싱
+    frame_ids, bboxes, tracks = parse_frames(file_content)
+    return frame_ids, bboxes, tracks
