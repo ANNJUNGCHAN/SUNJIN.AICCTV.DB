@@ -13,6 +13,7 @@ while True :
         VIDEO_PATH = "/Drive/HDD/AICCTV_VIDEO"
         SETTING_PATH = '/code/config.json'
         LOG_UPDATED_PATH = '/Drive/SSD1/AICCTV_UPDATE_LOG'
+        VIDEO_UPDATED_PATH = '/Drive/HDD/AICCTV_UPDATE_VIDEO'
 
         log_list = os.listdir(LOG_PATH)
         log_list = filter_log(log_list)
@@ -47,8 +48,8 @@ while True :
                 
                     # 만약, 둘다 0이면 비디오와 로그 모두 제거
                     if (in_count == '0') and (out_count == '0') :
-                        os.remove(os.path.join(VIDEO_PATH, path.replace('.txt','.avi')))
-                        os.remove(os.path.join(LOG_PATH, path))
+                        shutil.move(os.path.join(VIDEO_PATH, path.replace('.txt','.avi')), os.path.join(VIDEO_UPDATED_PATH, path.replace('.txt','.avi')))
+                        shutil.move(os.path.join(LOG_PATH, path),os.path.join(LOG_UPDATED_PATH, path))
                     
                     # 만약, 둘 중 하나가 0이 아니면, 로그는 기록으로 올린 후, 로그만 제거
                     else :
@@ -71,10 +72,10 @@ while True :
                 elif COUNTER == 'DEAD' :
                     print("DEAD 시작")
                     
-                    # 만약, 둘다 0이면 비디오와 로그 모두 제거
+                    # 만약, 둘다 0이면 비디오와 로그 UPDATED_PATH로 보내기
                     if (in_count == '0') and (out_count == '0') :
-                        os.remove(os.path.join(VIDEO_PATH, path.replace('.txt','.avi')))
-                        os.remove(os.path.join(LOG_PATH, path))
+                        shutil.move(os.path.join(VIDEO_PATH, path.replace('.txt','.avi')), os.path.join(VIDEO_UPDATED_PATH, path.replace('.txt','.avi')))
+                        shutil.move(os.path.join(LOG_PATH, path),os.path.join(LOG_UPDATED_PATH, path))
                     
                     # 만약, 둘 중 하나가 0이 아니면, 로그는 기록으로 올린 후, 로그만 제거
                     else :
